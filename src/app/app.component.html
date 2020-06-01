@@ -1,0 +1,50 @@
+<mat-toolbar color="primary">
+  <span class="title">Angular Material Chiplist with Autocomplete and Validation Demo</span>
+</mat-toolbar>
+
+<form [formGroup]="userForm" (ngSubmit)="submitForm()" novalidate>
+  <!-- Firstname -->
+  <mat-form-field>
+    <mat-label>Firstname *</mat-label>
+    <input matInput type="text" id="firstName" formControlName="firstName">
+    <mat-error *ngIf="hasError('firstName', 'required')">Required
+    </mat-error>
+    <mat-error *ngIf="hasError('firstName', 'maxlength')">Maximum length is 100 characters
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Lastname -->
+  <mat-form-field>
+    <mat-label>LastName *</mat-label>
+    <input matInput type="text" id="lastName" formControlName="lastName">
+    <mat-error *ngIf="hasError('lastName', 'required')">Required
+    </mat-error>
+    <mat-error *ngIf="hasError('lastName', 'maxlength')">Maximum length is 100 characters
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Favorite fruits -->
+  <mat-form-field>
+    <mat-chip-list #fruitList>
+      <mat-chip *ngFor="let fruit of user.fruits" [removable]="removable" (removed)="remove(fruit)">
+        {{fruit.name}}
+        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+      </mat-chip>
+      <input #fruitInput placeholder="Add your favorite fruits" [matChipInputFor]="fruitList"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+        (matChipInputTokenEnd)="addFruit($event)" [matAutocomplete]="fruitsAutocomplete" formControlName="fruitInput">
+    </mat-chip-list>
+    <mat-autocomplete #fruitsAutocomplete="matAutocomplete" (optionSelected)="selectFruit($event);">
+      <mat-option *ngFor="let fruit of filteredFruits$ | async" [value]="fruit">
+        {{fruit.name}}
+      </mat-option>
+    </mat-autocomplete>
+    <mat-error>At least 1 fruit need to be added</mat-error>
+  </mat-form-field>
+
+  <!-- Submit -->
+  <div class="button-wrapper">
+    <button mat-flat-button color="primary">Submit</button>
+  </div>
+
+</form>
